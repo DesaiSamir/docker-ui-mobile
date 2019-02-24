@@ -9,7 +9,7 @@
         "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
         "start": "node server.js",
         "postbuild": "cd client && npm install && npm run build",
-        "start:prod": "npm run prodserver",
+        "start:prod": "yarn && npm run prodserver",
         "prodserver": "NODE_ENV=production PORT=3000 node server.js"
     },
     "repository": {
