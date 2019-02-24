@@ -1,6 +1,8 @@
 {
     "name": "docker-ui-web-server",
     "version": "1.0.0",
+    "license": "MIT",
+    "author": "Samir Desai",
     "scripts": {
         "client": "cd client && yarn start",
         "server": "nodemon server.js",
@@ -10,6 +12,17 @@
         "start:prod": "yarn postbuild && npm run prodserver",
         "prodserver": "NODE_ENV=production PORT=3000 node server.js"
     },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/DesaiSamir/docker-ui-mobile"
+    },
+    "keywords": [
+      "docker",
+      "ui",
+      "manager",
+      "web",
+      "app"
+    ],
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.16.4",

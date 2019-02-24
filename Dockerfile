@@ -1,6 +1,6 @@
 FROM arm64v8/node:slim
 
-MAINTAINER Samir Desai
+LABEL author="Samir Desai"
 
 WORKDIR /app
 
