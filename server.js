@@ -44,6 +44,12 @@ app.use(session({
     saveUninitialized: true,
   }))
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
  // Route to the api
 app.use('/api/v1', api)
 
