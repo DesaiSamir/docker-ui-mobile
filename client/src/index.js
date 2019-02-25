@@ -1,12 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './styles/index.css';
+import {
+    BrowserRouter as Router,
+    Route
+  } from 'react-router-dom';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './service/serviceWorker';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+// import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const appHeights = {
+    appHeaderHeight : 56,
+    appFooterHeight : 56,
+    pageHeaderHeight: 0,
+    pageFooterHeight: 0,
+    tableHeight: 115,
+    contentHeight: window.innerHeight - 112
+};
 
+const routes = <Router>
+        <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+            <App appHeights={appHeights}>
+                {/* <Route exact path="/" render={(props) => <Home {...props} appHeights={appHeights}/>} />
+                <Route path="/Home" render={(props) => <Home {...props} appHeights={appHeights}/>} />
+                <Route path="/About" render={(props) => <About {...props} appHeights={appHeights}/>} />
+                <Route path="/Category" render={(props) => <Category {...props} appHeights={appHeights}/>} />
+                <Route path="/Expense" render={(props) => <Expense {...props} appHeights={appHeights}/>} /> */}
+            </App>
+        </MuiThemeProvider>
+    </Router>;
+
+ReactDOM.render(
+    routes,
+    document.getElementById('root')
+);
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
+
 serviceWorker.unregister();
