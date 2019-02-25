@@ -34,6 +34,6 @@ RUN npm install yarn -g
 
 ADD ./run.sh /root/run.sh
 
-EXPOSE 11999
+EXPOSE 3000
 
 CMD ["/root/run.sh"]

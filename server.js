@@ -9,7 +9,7 @@ const config     = require('./config');
 
 const app    = express()
 const server = http.createServer(app)
-const port   = process.env.PORT || config.port || 11998
+const port   = process.env.PORT || config.port || 3001
 const host   = process.env.DOCKER_UI_HOST || config.host || 'localhost'
 const assets = process.env.NODE_ENV === 'production' ? 'client/build' : 'client/public'
 
