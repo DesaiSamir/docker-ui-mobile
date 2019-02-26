@@ -9,7 +9,7 @@ import { Menu, Typography, IconButton, Avatar, CardActions, CardContent, CardHea
 
 const styles = theme => ({
   card: {
-    width: 180,
+    width: 170,
   },
   media: {
     height: 0,
