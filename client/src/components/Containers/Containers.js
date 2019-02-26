@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {STATE} from '../../stores/Containers/Containers';
-import StateContent from '../common/State';
+import ContainerCard from './ContainerCard';
 import { withStyles } from '@material-ui/core/styles';
 import {teal500, teal900, deepOrange900} from 'material-ui/styles/colors';
-import { Typography, Grid, Paper, CircularProgress } from '@material-ui/core';
-
-
+import { Grid, CircularProgress } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -14,10 +11,10 @@ const styles = theme => ({
     padding: 10,
   },
   paper: {
-    padding: theme.spacing.unit * 2,
     color: theme.palette.text.secondary,
     width: 100,
     minHeight: 100,
+    padding: 10,
   },
   margin: {
     bottom: 8,
@@ -25,6 +22,18 @@ const styles = theme => ({
   progress: {
     margin: theme.spacing.unit * 2,
     textAlign: 'center',
+  },
+  container: {
+    // overflowWrap: 'break-word',
+    ...theme.typography.button,
+    backgroundColor: theme.palette.common.white,
+    padding: '8px 0 8px 0',
+  },
+  cardAction: {
+    padding: '8px 0px'
+  },
+  cardContent: {
+    padding: '16px 4px'
   },
   toggle: {
       marginBottom: 16,
@@ -169,75 +178,6 @@ class Containers extends React.Component {
     }
   }
 
-  renderItemState = (state,classes) => {
-    
-    var message = ""
-    var variant = ""
-    switch (state) {
-      case STATE.CREATED:
-        message = "created"
-        variant = "info"
-        break;
-
-      case STATE.RUNNING:
-        message = "running"
-        variant = "success"
-        break;
-    
-      case STATE.PAUSED:
-        message = "paused"
-        variant = "warning"
-        break;
-
-      case STATE.RESTARTING:
-        message = "restarting"
-        variant = "warning"
-        break;
-      
-      case STATE.REMOVING:
-        message = "removing"
-        variant = "error"
-        break;
-      
-      case STATE.EXITED:
-        message = "exited"
-        variant = "error"
-        break;
-
-      case STATE.DEAD:
-        message = "dead"
-        variant = "error"
-        break;
-
-      default:
-        break;
-    }
-
-    var itemState =(
-      <StateContent
-          variant={variant}
-          className={classes.margin}
-          message={message}
-        />
-    );
-
-    return itemState;
-  }
-  renderPaperItem = (container, classes) => {
-    var paperItem = (
-      <Grid key={container.id} item >
-        <Paper className={classes.paper}>
-          <Typography variant="h6" component="h2">
-            {container.names}
-          </Typography>
-          {this.renderItemState(container.state, classes)}
-        </Paper>
-      </Grid>
-    );
-
-    return paperItem
-  }
-
   render() {
     // const {containers, error, inspect} = this.containersStore
     const {containers} = this.containersStore
@@ -252,9 +192,11 @@ class Containers extends React.Component {
     if(containers.length > 0){
       containerView = (
         <div className={classes.root}>
-          <Grid container spacing={16} justify='space-evenly'>
+          <Grid container spacing={8} justify='space-evenly'>
             {containers.map((container, i) => (
-              this.renderPaperItem(container, classes)
+              <Grid key={container.id} item >
+                <ContainerCard container={container} />
+              </Grid>
             ))}
           </Grid>
         </div>);

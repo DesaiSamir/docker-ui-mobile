@@ -35,7 +35,7 @@ const styles = {
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    padding: 10,
+    paddingBottom: 10,
     boxShadow: '0 4px 10px 0px rgba(0,0,0,0.8)',
   },
   body: {
@@ -84,7 +84,7 @@ class App extends Component {
         <Paper className={classes.body} elevation={1} style={{height: bodyHeight, top: headerHeight}}>
           {this.props.children}
         </Paper>
-        <BottomNavigation value={value} onChange={this.handleChange} showLabels className={classes.footer}>
+        <BottomNavigation value={value} onChange={this.handleChange} className={classes.footer}>
             <BottomNavigationAction
               label="Containers"
               icon={<Subtitles/>}

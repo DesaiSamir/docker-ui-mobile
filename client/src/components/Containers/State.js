@@ -51,7 +51,7 @@ class StateContent extends React.Component {
     const Icon = variantIcon[variant];
 
     return (
-      <Paper className={classNames(classes[variant], className)} >
+      <Paper className={classNames(classes[variant], className)} style={{width: '100%'}}>
         <span id="client-snackbar" className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
           {message}
