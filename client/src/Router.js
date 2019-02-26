@@ -14,12 +14,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 
 const appHeights = {
-    appHeaderHeight : 56,
-    appFooterHeight : 56,
-    pageHeaderHeight: 0,
-    pageFooterHeight: 0,
-    tableHeight: 115,
-    contentHeight: window.innerHeight - 112
+    appHeaderHeight : 66,
+    appFooterHeight : 66,
+    contentHeight: window.innerHeight - 132
 };
 
 export default class Router extends React.Component {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './dockericon.png';
 import './styles/App.css';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -16,7 +16,7 @@ const styles = {
     overflowY: 'scroll',
     WebkitOverflowScrolling: 'touch',
   },
-  grow: {
+  title: {
     flexGrow: 1,
   },
   avatar: {
@@ -35,19 +35,19 @@ const styles = {
     width: '100%',
     position: 'fixed',
     bottom: 0,
+    padding: 10,
+    boxShadow: '0 4px 10px 0px rgba(0,0,0,0.8)',
   },
   body: {
-    backgroundColor: '#009688',
     overflowY: 'scroll',
     WebkitOverflowScrolling: 'touch',
+    position: 'relative',
   },
   header: {
+    position: 'fixed',
+    width: '100%',
+    textAlign: 'center',
     boxShadow: '0 4px 10px 0px rgba(0,0,0,0.8)',
-    fontFamily: 'MAGNETOB',
-  },
-  titleStyle: {
-    fontSize: '3em',
-    textShadow: 'rgb(0, 0, 0) 3px 3px 0px',
   }
 };
 
@@ -57,39 +57,33 @@ class App extends Component {
     super(props)
 
     this.state = {
-      selectedIndex: 0,
       value: 0,
     }
   }
-  
-  select = (index) => this.setState({selectedIndex: index});
 
   handleChange = (event, value) => {
     this.setState({ value });
   };
 
-  handleClick = (event, value) => {
-    console.log("event: " + event);
-    console.log("value: " + value);
-  }
-
   render() {
     const { classes } = this.props;
     const { value } = this.state;
-    // classes.body.height = this.props.appHeights.contentHeight
-    // classes.header.height = this.props.appHeights.appHeaderHeight
+    var bodyHeight = this.props.appHeights.contentHeight
+    var headerHeight = this.props.appHeights.appHeaderHeight
 
     return (
       <Paper className={classes.root} elevation={1}>
-        <AppBar position="static"> 
+        <AppBar position="static" style={styles.header}> 
           <Toolbar>
             <Avatar alt="docker-ui" src={logo} className={classes.avatar} />
-            <Typography variant="h6" color="inherit" className={classes.grow}>
+            <Typography variant="h6" color="inherit" className={classes.title}>
               Docker UI
             </Typography>
           </Toolbar>
-        </AppBar> 
+        </AppBar>
+        <Paper className={classes.body} elevation={1} style={{height: bodyHeight, top: headerHeight}}>
           {this.props.children}
+        </Paper>
         <BottomNavigation value={value} onChange={this.handleChange} showLabels className={classes.footer}>
             <BottomNavigationAction
               label="Containers"

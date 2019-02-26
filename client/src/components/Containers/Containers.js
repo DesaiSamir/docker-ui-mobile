@@ -1,14 +1,31 @@
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
-// import AppStore from '../../stores/AppStore'
-// import {STATE} from '../../stores/Containers/Containers'
+import {STATE} from '../../stores/Containers/Containers';
+import StateContent from '../common/State';
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from 'material-ui/CircularProgress';
 import {teal500, teal900, deepOrange900} from 'material-ui/styles/colors';
-import { Card, Typography, CardContent } from '@material-ui/core';
+import { Typography, Grid, Paper, CircularProgress } from '@material-ui/core';
 
 
-const styles = {
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    padding: 10,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    color: theme.palette.text.secondary,
+    width: 100,
+    minHeight: 100,
+  },
+  margin: {
+    bottom: 8,
+  },
+  progress: {
+    margin: theme.spacing.unit * 2,
+    textAlign: 'center',
+  },
   toggle: {
       marginBottom: 16,
       textAlign: 'left',
@@ -52,7 +69,7 @@ const styles = {
       paddingTop: '50%'
   },
   card: {
-    minWidth: 275,
+    minWidth: 250,
   },
   bullet: {
     display: 'inline-block',
@@ -65,7 +82,7 @@ const styles = {
   pos: {
     marginBottom: 12,
   },
-};
+});
 
 class Containers extends React.Component {
 
@@ -152,49 +169,94 @@ class Containers extends React.Component {
     }
   }
 
+  renderItemState = (state,classes) => {
+    
+    var message = ""
+    var variant = ""
+    switch (state) {
+      case STATE.CREATED:
+        message = "created"
+        variant = "info"
+        break;
+
+      case STATE.RUNNING:
+        message = "running"
+        variant = "success"
+        break;
+    
+      case STATE.PAUSED:
+        message = "paused"
+        variant = "warning"
+        break;
+
+      case STATE.RESTARTING:
+        message = "restarting"
+        variant = "warning"
+        break;
+      
+      case STATE.REMOVING:
+        message = "removing"
+        variant = "error"
+        break;
+      
+      case STATE.EXITED:
+        message = "exited"
+        variant = "error"
+        break;
+
+      case STATE.DEAD:
+        message = "dead"
+        variant = "error"
+        break;
+
+      default:
+        break;
+    }
+
+    var itemState =(
+      <StateContent
+          variant={variant}
+          className={classes.margin}
+          message={message}
+        />
+    );
+
+    return itemState;
+  }
+  renderPaperItem = (container, classes) => {
+    var paperItem = (
+      <Grid key={container.id} item >
+        <Paper className={classes.paper}>
+          <Typography variant="h6" component="h2">
+            {container.names}
+          </Typography>
+          {this.renderItemState(container.state, classes)}
+        </Paper>
+      </Grid>
+    );
+
+    return paperItem
+  }
+
   render() {
     // const {containers, error, inspect} = this.containersStore
     const {containers} = this.containersStore
     const { classes } = this.props;
 
     var containerView = (
-      <div className={classes.loading}>
-        <CircularProgress size={80} thickness={5}  />
+      <div className={classes.progress} >
+        <CircularProgress size={80} thickness={5} color="secondary"/>
       </div>
     );
     
     if(containers.length > 0){
       containerView = (
-        <div>
-
-          {containers.map((container, i) => (
-
-            <div key={container.id}>
-              <Card className={classes.card}>
-                <CardContent>
-                  <Typography variant="h6" component="h2">
-                    {container.names}
-                  </Typography>
-                  <Typography component="p">
-                    Id: {container.id}
-                  </Typography>
-                  <Typography component="p">
-                    Image: {container.image}
-                  </Typography>
-                  <Typography component="p">
-                    Status: {container.status}
-                  </Typography>
-                  <Typography component="p">
-                    Ports: {container.ports}
-                  </Typography>
-                  <Typography component="p">
-                    State: {container.state}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
-
-          ))}
+        <div className={classes.root}>
+          <Grid container spacing={16} justify='space-evenly'>
+            {containers.map((container, i) => (
+              this.renderPaperItem(container, classes)
+            ))}
+          </Grid>
         </div>);
     }
 
@@ -281,7 +343,7 @@ class Containers extends React.Component {
 }
 
 Containers.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 }
 
 export default withStyles(styles)(Containers);
