@@ -5,33 +5,30 @@ import red from '@material-ui/core/colors/red';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import StateContent from './State';
 import {STATE} from '../../stores/Containers/Containers';
-import { Menu, Typography, IconButton, Avatar, CardActions, CardContent, CardHeader, Card, MenuItem } from '@material-ui/core';
+import { Menu, Typography, IconButton, Avatar, CardActions, CardContent, CardHeader, Card, MenuItem, Button, Dialog, Slide } from '@material-ui/core';
+import FullscreenDialog from '../common/FullscreenDialog'
 
+
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+  }
+  
 const styles = theme => ({
   card: {
     width: 170,
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
   },
   actions: {
     display: 'flex',
   },
   container: {
     ...theme.typography.button,
-    backgroundColor: theme.palette.common.white,
     padding: '8px 0 8px 0',
+    margin: 0,
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
+  button: {
+    padding: 0,
+    margin: 0,
+    width: '100%'
   },
   avatar: {
     backgroundColor: red[500],
@@ -40,12 +37,9 @@ const styles = theme => ({
 
 class ContainerCard extends React.Component {
     state = { 
-        expanded: false,
         anchorEl: null, 
-    };
-
-    handleExpandClick = () => {
-        this.setState(state => ({ expanded: !state.expanded }));
+        open: false,
+        type: 'details',
     };
 
     handleMenu = event => {
@@ -53,9 +47,19 @@ class ContainerCard extends React.Component {
     };
   
     handleClose = () => {
-      this.setState({ anchorEl: null });
+        this.setState({ 
+            anchorEl: null,
+            open: false,
+        });
     };
 
+    handleClickOpen = (type) => {
+        this.setState({ 
+            open: true,
+            anchorEl: null,
+            type,
+        });
+    }
     renderItemState = (state,classes) => {
         
         var message = ""
@@ -143,16 +147,26 @@ class ContainerCard extends React.Component {
                             open={open}
                             onClose={this.handleClose}
                         >
-                            <MenuItem onClick={this.handleClose}>Details</MenuItem>
-                            <MenuItem onClick={this.handleClose}>Logs</MenuItem>
+                            <MenuItem onClick={() => this.handleClickOpen('details')}>Details</MenuItem>
+                            <MenuItem onClick={() => this.handleClickOpen('logs')}>Logs</MenuItem>
                         </Menu>
                     </div>
                 }
                 />
                 <CardContent>
-                    <Typography variant="h6" component="h2" noWrap className={classes.container}>
-                        {container.names}
-                    </Typography>
+                    <Button className={classes.button} onClick={() => this.handleClickOpen('details')}>
+                        <Typography variant="h6" component="h2" noWrap className={classes.container}>
+                            {container.names}
+                        </Typography>
+                    </Button>
+                    <Dialog
+                        fullScreen
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                        TransitionComponent={Transition}
+                        >
+                        <FullscreenDialog data={container} handleClose={this.handleClose} type={this.state.type} />
+                    </Dialog>
                 </CardContent>
                 <CardActions className={classes.actions} >
                     {this.renderItemState(container.state, classes)}

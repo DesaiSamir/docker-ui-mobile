@@ -24,7 +24,6 @@ const styles = theme => ({
     textAlign: 'center',
   },
   container: {
-    // overflowWrap: 'break-word',
     ...theme.typography.button,
     backgroundColor: theme.palette.common.white,
     padding: '8px 0 8px 0',
