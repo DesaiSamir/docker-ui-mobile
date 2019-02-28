@@ -12,6 +12,7 @@ module.exports = {
   kill,
   pause,
   unpause,
+  logs
 }
 
 async function list(req, res) {
@@ -107,6 +108,15 @@ async function pause(req, res) {
 async function unpause(req, res) {
   try {
     res.send(await request('post', `containers/${req.params.id}/unpause`))
+  }
+  catch(e) {
+    res.status(500).send(e)
+  }
+}
+
+async function logs(req, res) {
+  try {
+    res.send(await request('get', `containers/${req.params.id}/logs?since=0&stderr=1&stdout=1&tail=100&timestamps=0`))
   }
   catch(e) {
     res.status(500).send(e)

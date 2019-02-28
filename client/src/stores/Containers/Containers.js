@@ -36,7 +36,7 @@ export default class Containers extends BaseStore {
     this.setError()
 
     try {
-      const res = await axios.get(`containers/${id}`)
+      const res = await axios.get(`containers/${id}/inspect`)
       this.inspect = res.data
     }
     catch(e) {
@@ -116,7 +116,8 @@ export default class Containers extends BaseStore {
 
     try {
       await axios.put(`containers/${id}/start`)
-      this.loadContainers()
+      setTimeout(() => this.loadContainers(), 5000);
+      // this.loadContainers()
     }
     catch(e) {
       this.setError(e)
@@ -128,7 +129,8 @@ export default class Containers extends BaseStore {
 
     try {
       await axios.put(`containers/${id}/stop`)
-      this.loadContainers()
+      setTimeout(() => this.loadContainers(), 5000);
+      
     }
     catch(e) {
       this.setError(e)
@@ -165,6 +167,18 @@ export default class Containers extends BaseStore {
     try {
       await axios.put(`containers/${id}/unpause`)
       this.loadContainers()
+    }
+    catch(e) {
+      this.setError(e)
+    }
+  }
+
+  getContainerLogs = async id => {
+    this.setError()
+
+    try {
+      const res = await axios.get(`containers/${id}/logs`)
+      return res.data.message.replace(/\r\n/g, "<br />")
     }
     catch(e) {
       this.setError(e)

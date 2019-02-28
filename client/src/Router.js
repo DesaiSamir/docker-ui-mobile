@@ -11,7 +11,7 @@ import Containers from './components/Containers/Containers'
 const appHeights = {
     appHeaderHeight : 66,
     appFooterHeight : 66,
-    contentHeight: window.innerHeight - 132
+    contentHeight: window.innerHeight - 130
 };
 
 export default class Router extends React.Component {
