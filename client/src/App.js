@@ -64,9 +64,18 @@ class App extends Component {
     this.state = {
       value: 0,
       theme: 'dark',
+      transform: null,
     }
   }
 
+  handleScroll = (event) => {
+      let scrollTop = event.target.scrollTop,
+          itemTranslate = Math.min(0, scrollTop/3 - 60);
+
+      this.setState({
+        transform: itemTranslate
+      });
+  }
   handleChange = (event, value) => {
     this.setState({ value });
   };
@@ -109,7 +118,7 @@ class App extends Component {
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Paper className={classes.body} elevation={1} style={{height: bodyHeight, top: headerHeight}}>
+          <Paper className={classes.body} elevation={1} style={{height: bodyHeight, top: headerHeight}} onScroll={this.handleScroll}>
             {this.props.children}
           </Paper>
           <BottomNavigation value={value} onChange={this.handleChange} className={classes.footer}>

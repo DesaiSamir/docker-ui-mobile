@@ -30,7 +30,7 @@ const variantIcon = {
       backgroundColor: amber[700],
     },
     icon: {
-      fontSize: 20,
+      // fontSize: 20,
     },
     iconVariant: {
       opacity: 0.9,
@@ -45,12 +45,13 @@ const variantIcon = {
 class StateContent extends React.Component {
   
   render(){
-    const { classes, className, message, variant} = this.props;
-    const firstLetter = message.charAt(0).toUpperCase();
+    const { classes, className, variant} = this.props;
+    // const firstLetter = message.charAt(0).toUpperCase();
+    const Icon = variantIcon[variant];
 
     return (
       <Avatar aria-label="Recipe" className={classNames(classes[variant], className)}>
-        {firstLetter}
+        <Icon className={classNames(classes.icon, classes.iconVariant)} />
       </Avatar>
     );
   }
