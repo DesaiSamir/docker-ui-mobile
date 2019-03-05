@@ -5,8 +5,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
 import {green, amber} from '@material-ui/core/colors';
-// import amber from '@material-ui/core/colors/amber';
-import {Paper} from '@material-ui/core';
+import {Avatar} from '@material-ui/core';
 import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -35,7 +34,6 @@ const variantIcon = {
     },
     iconVariant: {
       opacity: 0.9,
-      // marginRight: theme.spacing.unit,
     },
     message: {
       display: 'flex',
@@ -48,15 +46,12 @@ class StateContent extends React.Component {
   
   render(){
     const { classes, className, message, variant} = this.props;
-    const Icon = variantIcon[variant];
+    const firstLetter = message.charAt(0).toUpperCase();
 
     return (
-      <Paper className={classNames(classes[variant], className)} style={{width: '100%'}}>
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={classNames(classes.icon, classes.iconVariant)} />
-          {message}
-        </span>
-      </Paper>
+      <Avatar aria-label="Recipe" className={classNames(classes[variant], className)}>
+        {firstLetter}
+      </Avatar>
     );
   }
 }

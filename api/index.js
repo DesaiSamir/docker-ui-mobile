@@ -3,6 +3,7 @@ const images     = require('./images')
 const containers = require('./containers')
 const volumes    = require('./volumes')
 const networks   = require('./networks')
+const events       = require('./events')
 const auth       = require('./auth')
 
 const router = module.exports = new Router()
@@ -14,6 +15,8 @@ router.get   ('/images',       auth.middleware, images.list)
 router.get   ('/images/:id',   auth.middleware, images.read)
 router.delete('/images/:id',   auth.middleware, images.destroy)
 router.post  ('/images/prune', auth.middleware, images.prune)
+
+router.get   ('/events',                 auth.middleware, events.events)
 
 router.get   ('/containers',             auth.middleware, containers.list)
 router.get   ('/containers/:id/inspect', auth.middleware, containers.read)

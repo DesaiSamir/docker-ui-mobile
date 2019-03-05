@@ -95,7 +95,7 @@ class FullScreenDialog extends React.Component {
     }
 
     render() {
-        const { classes, container, type, handleClose, logs } = this.props;
+        const { classes, container, type, handleClose, logs, color } = this.props;
         var headerHeight = this.props.appHeaderHeight
         var bodyHeight = window.innerHeight - this.props.appHeaderHeight;
         var renderDialog = this.renderDetails(container);
@@ -118,7 +118,7 @@ class FullScreenDialog extends React.Component {
                     </Button>
                     </Toolbar>
                 </AppBar>
-                <Card className={classes.body}  style={{height: bodyHeight, top: headerHeight}}>
+                <Card className={classes.body}  style={{height: bodyHeight, top: headerHeight, backgroundColor: color}}>
                     <CardContent>
                         {renderDialog}
                     </CardContent>
@@ -136,6 +136,7 @@ FullScreenDialog.propTypes = {
   container: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   logs: PropTypes.string,
+  color: PropTypes.string,
 };
 
 export default withStyles(styles)(FullScreenDialog);

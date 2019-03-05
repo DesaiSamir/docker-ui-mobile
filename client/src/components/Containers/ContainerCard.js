@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import StateContent from './State';
 import {STATE} from '../../stores/Containers/Containers';
-import { Menu, Typography, IconButton, Avatar, CardActions, CardContent, CardHeader, Card, MenuItem, Button, Dialog, Slide, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Menu, Typography, IconButton, CardHeader, Card, MenuItem, Button, Dialog, Slide, ListItemIcon, ListItemText, DialogContent, DialogContentText, DialogActions, DialogTitle } from '@material-ui/core';
 import FullscreenDialog from '../common/FullscreenDialog'
 import { setInterval } from 'timers';
 import  
@@ -25,7 +25,7 @@ function Transition(props) {
   
 const styles = theme => ({
     card: {
-        width: 170,
+        // width: 170,
     },
     actions: {
         display: 'flex',
@@ -62,6 +62,9 @@ class ContainerCard extends React.Component {
         alert: false,
         type: 'details',
         logs: '',
+        dialogAction: null,
+        dialogTitle: null,
+        dialogMessage: null,
     };
 
     getContainerLogs = (type, id) => {
@@ -88,6 +91,16 @@ class ContainerCard extends React.Component {
         }, 3000);
     }
 
+    handleAlertOpen = (dialogAction, dialogTitle, dialogMessage) => {
+        this.setState({ 
+            open: false,
+            alert: true,
+            dialogAction,
+            dialogTitle,
+            dialogMessage,
+        });
+    };
+
     handleMenu = event => {
       this.setState({ anchorEl: event.currentTarget });
     };
@@ -97,7 +110,6 @@ class ContainerCard extends React.Component {
             anchorEl: null,
             open: false,
             type: 'details',
-            alert: false,
         });
     };
 
@@ -108,10 +120,6 @@ class ContainerCard extends React.Component {
             type,
         });
     }
-    
-    handleAlertOpen = () => {
-        this.setState({ alert: true });
-    };
 
     renderItemState = (state,classes) => {
         
@@ -168,56 +176,20 @@ class ContainerCard extends React.Component {
         return itemState;
     }
 
-    // renderAlertDialog(action){
-    //     const dialog = (
-    //         <div>
-    //           <Dialog
-    //             open={this.state.alert}
-    //             TransitionComponent={Transition}
-    //             keepMounted
-    //             onClose={this.handleClose}
-    //             aria-labelledby="alert-dialog-slide-title"
-    //             aria-describedby="alert-dialog-slide-description"
-    //           >
-    //             <DialogTitle id="alert-dialog-slide-title">
-    //               {"Use Google's location service?"}
-    //             </DialogTitle>
-    //             <DialogContent>
-    //               <DialogContentText id="alert-dialog-slide-description">
-    //                 Let Google help apps determine location. This means sending anonymous location data to
-    //                 Google, even when no apps are running.
-    //               </DialogContentText>
-    //             </DialogContent>
-    //             <DialogActions>
-    //               <Button onClick={this.handleClose} color="primary">
-    //                 Disagree
-    //               </Button>
-    //               <Button onClick={action} color="primary">
-    //                 Agree
-    //               </Button>
-    //             </DialogActions>
-    //           </Dialog>
-    //         </div>
-    //     );
-    //   }
-
     render() {
-        const { classes, container } = this.props;
-        const { anchorEl } = this.state;
+        const { classes, container, color } = this.props;
+        const { anchorEl, dialogAction, dialogMessage, dialogTitle } = this.state;
         const open = Boolean(anchorEl);
-        const firstLetter = container.names.charAt(0).toUpperCase();
         var disabled = false;
+        var cardWidth = window.innerWidth - 10;
+
         if(container.names.toLowerCase() === 'dockerui'){
             disabled = true;
         }
         return (
-            <Card className={classes.card}>
+            <Card className={classes.card} style={{width: cardWidth, backgroundColor: color}}>
                 <CardHeader
-                avatar={
-                    <Avatar aria-label="Recipe" className={classes.avatar}>
-                    {firstLetter}
-                    </Avatar>
-                }
+                avatar={this.renderItemState(container.state, classes)}
                 action={
                     <div>
                         <IconButton
@@ -253,8 +225,14 @@ class ContainerCard extends React.Component {
                                 <ListItemText classes={{ primary: classes.primary }} inset primary="Logs" />
                             </MenuItem>
                             <MenuItem disabled={disabled} onClick={() => {
-                                    this.props.startContainer(container.names)
-                                    this.getContainerLogs('logs', container.names)
+                                    this.handleAlertOpen(() => {
+                                        this.props.startContainer(container.names)
+                                        this.setState({alert: false})
+                                        this.getContainerLogs('logs', container.names)
+                                    },
+                                    'Start Container',
+                                    `Are you sure you want to start container ${container.names}?`)
+                                    this.handleClose()
                                 }}>
                                 <ListItemIcon className={classes.icon}>
                                     <StartIcon />
@@ -262,7 +240,12 @@ class ContainerCard extends React.Component {
                                 <ListItemText classes={{ primary: classes.primary }} inset primary="Start" />
                             </MenuItem>
                             <MenuItem disabled={disabled} onClick={() => {
-                                    this.props.stopContainer(container.names)
+                                    this.handleAlertOpen(() => {
+                                        this.props.stopContainer(container.names)
+                                        this.setState({alert: false})
+                                    },
+                                    'Stop Container',
+                                    `Are you sure you want to stop container ${container.names}?`)
                                     this.handleClose()
                                 }}>
                                 <ListItemIcon className={classes.icon}>
@@ -271,9 +254,14 @@ class ContainerCard extends React.Component {
                                 <ListItemText classes={{ primary: classes.primary }} inset primary="Stop" />
                             </MenuItem>
                             <MenuItem onClick={() => {
-                                    this.props.containerStore.restartContainer(container.names)
-                                    this.getContainerLogs('logs', container.names)
-                                    this.props.loadContainers()
+                                    this.handleAlertOpen(() => {
+                                        this.props.containerStore.restartContainer(container.names)
+                                        this.setState({alert: false})
+                                        this.getContainerLogs('logs', container.names)
+                                    },
+                                    'Restart Container',
+                                    `Are you sure you want to restart container ${container.names}?`)
+                                    this.handleClose()
                                 }}>
                                 <ListItemIcon className={classes.icon}>
                                     <RestartIcon />
@@ -281,9 +269,13 @@ class ContainerCard extends React.Component {
                                 <ListItemText classes={{ primary: classes.primary }} inset primary="Restart" />
                             </MenuItem>
                             <MenuItem disabled={disabled} onClick={() => {
-                                    this.props.containerStore.killContainer(container.names)
+                                    this.handleAlertOpen(() => {
+                                        this.props.containerStore.killContainer(container.names)
+                                        this.setState({alert: false})
+                                    },
+                                    'Kill Container',
+                                    `Are you sure you want to kill container ${container.names}?`)
                                     this.handleClose()
-                                    this.props.loadContainers()
                                 }}>
                                 <ListItemIcon className={classes.icon}>
                                     <KillIcon />
@@ -300,31 +292,56 @@ class ContainerCard extends React.Component {
                             </MenuItem>
                         </Menu>
                     </div>
-                }/>
-                <CardContent>
-                    <Button className={classes.button} onClick={() => this.handleClickOpen('details')}>
-                        <Typography variant="h6" component="h2" noWrap className={classes.container}>
-                            {container.names}
-                        </Typography>
-                    </Button>
-                    <Dialog
-                        fullScreen
-                        open={this.state.open}
-                        onClose={this.handleClose}
-                        TransitionComponent={Transition}
-                        >
-                        <FullscreenDialog 
-                            container={container} 
-                            logs={this.state.logs} 
-                            handleClose={this.handleClose} 
-                            type={this.state.type} 
-                            {...this.props.appHeights} 
-                        />
-                    </Dialog>
-                </CardContent>
-                <CardActions className={classes.actions} >
-                    {this.renderItemState(container.state, classes)}
-                </CardActions>
+                    }
+                    title={
+                        <Button className={classes.button} onClick={() => this.handleClickOpen('details')}>
+                            <Typography variant="h6" component="h2" noWrap className={classes.container}>
+                                {container.names}
+                            </Typography>
+                        </Button>
+                    }
+                />
+                <Dialog
+                    fullScreen
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    TransitionComponent={Transition}
+                    style={{backgroundColor: color}}
+                    >
+                    <FullscreenDialog 
+                        container={container} 
+                        logs={this.state.logs} 
+                        handleClose={this.handleClose} 
+                        type={this.state.type} 
+                        {...this.props.appHeights} 
+                        color={color}
+                    />
+                </Dialog>
+                <Dialog
+                    open={this.state.alert}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title" style={{backgroundColor: color}}>
+                        {dialogTitle}
+                    </DialogTitle>
+                    <DialogContent style={{backgroundColor: color}}>
+                        <DialogContentText id="alert-dialog-slide-description" >
+                            {dialogMessage}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.setState({alert: false})} style={{color: color}}>
+                            Disagree
+                        </Button>
+                        <Button onClick={dialogAction} style={{color: color}}>
+                            Agree
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Card>
         );
     }
@@ -334,9 +351,9 @@ ContainerCard.propTypes = {
   classes: PropTypes.object.isRequired,
   containerStore: PropTypes.object.isRequired,
   container: PropTypes.object.isRequired,
-  loadContainers: PropTypes.func,
   startContainer: PropTypes.func,
   stopContainer: PropTypes.func,
+  color: PropTypes.string,
 };
 
 export default withStyles(styles)(ContainerCard);

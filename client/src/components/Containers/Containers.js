@@ -4,6 +4,7 @@ import ContainerCard from './ContainerCard';
 import { withStyles } from '@material-ui/core/styles';
 import {teal500, teal900, deepOrange900} from 'material-ui/styles/colors';
 import { Grid, CircularProgress } from '@material-ui/core';
+import randomMC from 'random-material-color';
 
 const styles = theme => ({
   root: {
@@ -100,6 +101,7 @@ class Containers extends React.Component {
     this.state = {
       stateChanged: 0,
       containers: [],
+      colors: [],
     };
 
     this.appStore = props.store
@@ -138,6 +140,16 @@ class Containers extends React.Component {
           stateChanged: stateCounter
         })
       })
+    
+    setInterval(() => {
+      this.containersStore.loadContainers()
+        .then(res => {
+          const stateCounter = this.state.stateChanged + 1
+          this.setState({
+            stateChanged: stateCounter
+          })
+        })
+    }, 10000);
   }
 
   pauseContainer = id => {
@@ -161,33 +173,38 @@ class Containers extends React.Component {
   }
 
   restartContainer = id => {
-    if (window.confirm(`Are you sure you want to restart container ${id}?`)) {
       this.containersStore.restartContainer(id)
-    }
   }
 
   startContainer = id => {
-    if (window.confirm(`Are you sure you want to start container ${id}?`)) {
       this.containersStore.startContainer(id)
-      setTimeout(() => this.loadContainers(), 5000)
-    }
   }
 
   stopContainer = id => {
-    if (window.confirm(`Are you sure you want to stop container ${id}?`)) {
       this.containersStore.stopContainer(id)
-      setTimeout(() => this.loadContainers(), 5000)
-    }
   }
 
   killContainer = id => {
-    if (window.confirm(`Are you sure you want to kill container ${id}?`)) {
       this.containersStore.killContainer(id)
-    }
   }
 
+  loadColors = count => {
+    var colors = []
+    for (let i = 0; i < count; i++) {
+      var exist = true;
+      while (exist) {
+        var color;
+        if(exist){
+          color = randomMC.getColor({ shades: ['500', '600'] });
+        }
+        exist = colors.includes(color);
+      }
+      colors.push(color);
+    }
+    return colors
+  }
+  
   render() {
-    // const {containers, error, inspect} = this.containersStore
     const {containers} = this.containersStore
     const { classes } = this.props;
 
@@ -198,6 +215,13 @@ class Containers extends React.Component {
     );
     
     if(containers.length > 0){
+      var colors = this.state.colors;
+      if(colors.length === 0){
+        colors = this.loadColors(containers.length);
+        this.setState({
+          colors: colors,
+        })
+      }
       containerView = (
         <div className={classes.root}>
           <Grid container spacing={8} justify='space-evenly'>
@@ -207,9 +231,9 @@ class Containers extends React.Component {
                   containerStore={this.containersStore} 
                   container={container} 
                   appHeights={this.props.appHeights} 
-                  loadContainers={this.loadContainers.bind(this)}
                   startContainer={this.startContainer.bind(this)}
                   stopContainer={this.stopContainer.bind(this)}
+                  color={colors[i]}
                   />
               </Grid>
             ))}
