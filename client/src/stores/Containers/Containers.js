@@ -178,7 +178,14 @@ export default class Containers extends BaseStore {
 
     try {
       const res = await axios.get(`containers/${id}/logs`)
-      return res.data.message.replace(/\r\n/g, "<br />")
+      var logs = res.data.message
+      if(!logs.includes("\r\n")){
+        logs = logs.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
+        logs = logs.substring(8);
+        logs = logs.replace(/\n(.{8})/g, "\n\r");
+      }
+      logs = logs.replace(/\n/g, "<br />")
+      return logs
     }
     catch(e) {
       this.setError(e)

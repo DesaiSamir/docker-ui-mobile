@@ -62,9 +62,9 @@ class ContainerCard extends React.Component {
         alert: false,
         type: 'details',
         logs: '',
-        dialogAction: null,
-        dialogTitle: null,
-        dialogMessage: null,
+        dialogAction: (() => {}),
+        dialogTitle: "",
+        dialogMessage: "",
     };
 
     getContainerLogs = (type, id) => {
